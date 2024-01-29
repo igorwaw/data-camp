@@ -20,6 +20,8 @@ docker build -t taxi_ingest:v003 .  # there were previous attempts
 
 ### Docker for Postgres
 
+With pgadmin and the data ingestion container
+
 Note: I'm only running the last container interactive and others detached
 
 ```bash
@@ -75,3 +77,36 @@ pip list  # 0.42.0
 docker ps -a
 docker rm 8812164e3a17
 ```
+
+### Question 3. Count records
+
+How many taxi trips were totally made on September 18th 2019?   - 15612
+
+```sql
+SELECT
+    COUNT(1)
+FROM green_taxi_trips
+WHERE CAST(lpep_pickup_datetime AS DATE) = '2019-09-18' AND CAST(lpep_dropoff_datetime AS DATE) = '2019-09-18'
+;
+```
+
+### Question 4. Longest trip for each day
+
+Which was the pick up day with the longest trip distance? Use the pick up time for your calculations.
+
+```sql
+SELECT
+    MAX(trip_distance) AS dist, lpep_pickup_datetime
+FROM green_taxi_trips
+GROUP BY lpep_pickup_datetime
+ORDER BY dist DESC
+LIMIT 1
+;
+```
+
+341.64 on "2019-09-26 19:32:52"
+
+### Question 5. Three biggest pick up Boroughs
+
+Consider lpep_pickup_datetime in '2019-09-18' and ignoring Borough has Unknown. Which were the 3 pick up Boroughs that had a sum of total_amount superior to 50000?
+
