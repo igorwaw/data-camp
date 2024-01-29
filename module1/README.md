@@ -110,3 +110,28 @@ LIMIT 1
 
 Consider lpep_pickup_datetime in '2019-09-18' and ignoring Borough has Unknown. Which were the 3 pick up Boroughs that had a sum of total_amount superior to 50000?
 
+```sql
+SELECT zones."Borough"
+FROM green_taxi_trips AS trips JOIN zones ON trips."PULocationID" = zones."LocationID"
+WHERE CAST(lpep_pickup_datetime AS DATE) = '2019-09-18'
+GROUP BY zones."Borough"
+HAVING SUM(trips.total_amount) > 50000
+;
+```
+
+Brooklyn Manhattan Queens
+
+### Question 6. Largest tip
+
+For the passengers picked up in September 2019 in the zone name Astoria which was the drop off zone that had the largest tip? We want the name of the zone, not the id.
+
+```sql
+
+SELECT zones."Zone", trips.tip_amount
+FROM zones LEFT JOIN green_taxi_trips AS trips ON trips."DOLocationID" = zones."LocationID"
+WHERE trips."PULocationID" IN (SELECT "LocationID" FROM zones WHERE "Zone" = 'Astoria')
+ORDER BY trips.tip_amount DESC
+LIMIT 1;
+```
+
+JFK Airport
